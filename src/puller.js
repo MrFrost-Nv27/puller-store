@@ -8,6 +8,7 @@ class Puller {
       wrap: "",
       data: [],
       callbacks: [],
+      done: false,
     }
   ) {
     this.callbacks = prop.callbacks;
@@ -63,11 +64,13 @@ class Puller {
     for (const key of iterator) {
       if (this.datasets.map((d) => d.name).includes(key)) {
         let item = this.datasets.find((v) => v.name == key);
+        item.done = false;
         item.data = await this.fetch(item.url, {
           method: item.method,
           data: item.param,
           wrap: item.wrap,
         });
+        item.done = true;
         item.callbacks.forEach((cb) => {
           cb(item.data);
         });
@@ -89,21 +92,23 @@ class Puller {
       wrap: false,
     }
   ) {
-    let data = await this.fetch(url, options);
     const newDs = new this._datasetprop({
       name: options.name ?? url,
       url: url,
-      data: data,
+      data: null,
       method: options.method ?? "GET",
       param: options.data ?? {},
       wrap: options.wrap ?? false,
       callbacks: [],
+      done: false,
     });
+    this.datasets.push(newDs);
+    let data = await this.fetch(url, options);
+    newDs.data = data;
+    newDs.done = true;
     if (options.callback) {
-      console.log(newDs);
       newDs.callbacks.push(options.callback);
     }
-    this.datasets.push(newDs);
     return data;
   }
   async fetch(
