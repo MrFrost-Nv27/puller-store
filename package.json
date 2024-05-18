@@ -1,10 +1,11 @@
 {
   "name": "puller-store",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Fetch from network and pull it in an object-based data store",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minify": "terser-folder src -eo dist"
   },
   "repository": {
     "type": "git",

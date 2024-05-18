@@ -7,7 +7,7 @@
 #### Script tag
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/puller-store/dist/puller.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/puller-store/src/puller.js"></script>
 ```
 
 For initiation you must create a variable to init the object
