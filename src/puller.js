@@ -6,7 +6,7 @@ class Puller {
       method: "",
       param: "",
       wrap: "",
-      data: [],
+      data: null,
       callbacks: [],
       done: false,
     }
@@ -76,7 +76,7 @@ class Puller {
             cb(item.data);
           });
         } catch (error) {
-          item.data = [];
+          item.data = null;
         }
         item.done = true;
         if (iterator.length == 1) {
@@ -108,14 +108,15 @@ class Puller {
       done: false,
     });
     this.datasets.push(newDs);
+    let data = null;
     try {
-      let data = await this.fetch(url, options);
+      data = await this.fetch(url, options);
       newDs.data = data;
       if (options.callback) {
         newDs.callbacks.push(options.callback);
       }
     } catch (error) {
-      newDs.data = [];
+      newDs.data = null;
     }
     newDs.done = true;
     return data;
