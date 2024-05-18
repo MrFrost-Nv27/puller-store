@@ -18,6 +18,7 @@ class Puller {
     this.method = prop.method;
     this.param = prop.param;
     this.wrap = prop.wrap;
+    this.done = prop.done;
   };
   datasets = [];
   constructor() {}
