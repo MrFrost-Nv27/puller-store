@@ -60,7 +60,7 @@ class Puller {
       iterator = name;
     }
     if (undefined == name[0]) iterator = this.datasets.map((d) => d.name);
-    iterator.map(async (key) => {
+    for (const key of iterator) {
       if (this.datasets.map((d) => d.name).includes(key)) {
         let item = this.datasets.find((v) => v.name == key);
         item.data = await this.fetch(item.url, {
@@ -71,8 +71,11 @@ class Puller {
         item.callbacks.forEach((cb) => {
           cb(item.data);
         });
+        if (iterator.length == 1) {
+          return item.data;
+        }
       }
-    });
+    }
     return this;
   }
 
@@ -101,6 +104,7 @@ class Puller {
       newDs.callbacks.push(options.callback);
     }
     this.datasets.push(newDs);
+    return data;
   }
   async fetch(
     url,
