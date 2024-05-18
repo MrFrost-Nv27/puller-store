@@ -33,16 +33,16 @@ class Puller {
       if (name.map((l) => typeof l == "string").includes(false)) return false;
       iterator = name;
     }
-    iterator.map((key) => {
-      if (this.datasets.find((v) => v.name == key)) {
-        result[key] = this.datasets.find((v) => v.name == key).data;
-      }
-    });
 
-    if (result == {}) {
-      return false;
+    for (const key of iterator) {
+      const r = this.datasets.find((v) => v.name == key) ?? false;
+      if (iterator.length == 1) {
+        return r ? r.data : r;
+      }
+      result[key] = r ? r.data : r;
     }
-    return Object.keys(result).length == 1 ? result[Object.keys(result)[0]] : result;
+
+    return result;
   }
 
   addCallback(name = "", callback = function () {}) {
@@ -66,15 +66,19 @@ class Puller {
       if (this.datasets.map((d) => d.name).includes(key)) {
         let item = this.datasets.find((v) => v.name == key);
         item.done = false;
-        item.data = await this.fetch(item.url, {
-          method: item.method,
-          data: item.param,
-          wrap: item.wrap,
-        });
+        try {
+          item.data = await this.fetch(item.url, {
+            method: item.method,
+            data: item.param,
+            wrap: item.wrap,
+          });
+          item.callbacks.forEach((cb) => {
+            cb(item.data);
+          });
+        } catch (error) {
+          item.data = [];
+        }
         item.done = true;
-        item.callbacks.forEach((cb) => {
-          cb(item.data);
-        });
         if (iterator.length == 1) {
           return item.data;
         }
@@ -104,12 +108,16 @@ class Puller {
       done: false,
     });
     this.datasets.push(newDs);
-    let data = await this.fetch(url, options);
-    newDs.data = data;
-    newDs.done = true;
-    if (options.callback) {
-      newDs.callbacks.push(options.callback);
+    try {
+      let data = await this.fetch(url, options);
+      newDs.data = data;
+      if (options.callback) {
+        newDs.callbacks.push(options.callback);
+      }
+    } catch (error) {
+      newDs.data = [];
     }
+    newDs.done = true;
     return data;
   }
   async fetch(
