@@ -58,6 +58,7 @@ class Puller {
   }
 
   async pull(...name) {
+    let result = {};
     let iterator = [];
     if (Array.isArray(name[0])) {
       if (name[0].map((l) => typeof l == "string").includes(false)) return false;
@@ -87,9 +88,12 @@ class Puller {
         if (iterator.length == 1) {
           return item.data;
         }
+        result[key] = item.data;
+      } else {
+        result[key] = false;
       }
     }
-    return this;
+    return result;
   }
 
   async add(

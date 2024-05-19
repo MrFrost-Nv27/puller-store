@@ -1,6 +1,6 @@
 {
   "name": "puller-store",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Fetch from network and pull it in an object-based data store",
   "main": "index.js",
   "scripts": {
