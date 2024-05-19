@@ -27,7 +27,9 @@ class Puller {
     let iterator = [];
     let result = {};
     if (name.length == 0) {
-      return this.datasets.map((d) => d.data);
+      this.datasets.forEach(ds => {
+        result[ds.name] = ds.data;
+      });
     }
     if (Array.isArray(name[0])) {
       if (name[0].map((l) => typeof l == "string").includes(false)) return false;
